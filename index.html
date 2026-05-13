@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <!-- Tato řádka zajistí, že na mobilu bude web čitelný a nebude se zoomovat -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeCoding: Fuel Tracker</title>
+    <style>
+        body { font-family: sans-serif; background: #121212; color: white; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: #1e1e1e; padding: 20px; border-radius: 10px; }
+        input, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 5px; border: none; font-size: 16px; }
+        button { background: #00ff88; color: black; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #00cc6e; }
+        /* Styl pro mazací tlačítko */
+        .btn-reset { background: #ff4444; color: white; margin-top: 10px; }
+        .btn-reset:hover { background: #cc0000; }
+        table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+        th, td { border-bottom: 1px solid #333; padding: 10px; text-align: left; }
+        .stats { margin-top: 20px; padding: 15px; background: #252525; border-radius: 5px; border-left: 5px solid #00ff88; }
+        .warning { color: #ff4444; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🚗 Deník jízd & spotřeby</h2>
+    
+    <input type="number" id="km" placeholder="Ujeto km">
+    <input type="number" id="spotreba" placeholder="Spotřeba (l/100km)" step="0.1">
+    <input type="number" id="cena" placeholder="Cena za litr (Kč)">
+    <input type="number" id="tankovano" placeholder="Natankováno litrů (0 pokud ne)">
+    
+    <button onclick="pridatJizdu()">Přidat jízdu do logu</button>
+    <button class="btn-reset" onclick="vymazatHistorii()">Vymazat celou historii</button>
+
+    <table id="tabulkaJizd">
+        <thead>
+            <tr>
+                <th>KM</th>
+                <th>Litrů</th>
+                <th>Cena</th>
+                <th>Tank.</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <div id="stats" class="stats">
+        <h3>Celkové statistiky</h3>
+        <p>Celkem ujeto: <span id="totalKm">0</span> km</p>
+        <p>Celková cena: <span id="totalPrice">0</span> Kč</p>
+        <p id="alert" class="warning" style="display:none;">!!! Pozor, vysoké náklady !!!</p>
+    </div>
+</div>
+
+<script>
+    // Načtení dat z localStorage
+    let jizdy = JSON.parse(localStorage.getItem('mojeJizdy')) || [];
+
+    window.onload = aktualizujUI;
+
+    function pridatJizdu() {
+        const km = parseFloat(document.getElementById('km').value);
+        const spotreba = parseFloat(document.getElementById('spotreba').value);
+        const cenaPaliva = parseFloat(document.getElementById('cena').value);
+        const tankovano = parseFloat(document.getElementById('tankovano').value) || 0;
+
+        if (isNaN(km) || isNaN(spotreba) || isNaN(cenaPaliva)) {
+            alert("Doplň prosím všechny údaje.");
+            return;
+        }
+
+        const novaJizda = {
+            km,
+            litry: (km / 100) * spotreba,
+            cena: (km / 100) * spotreba * cenaPaliva,
+            tankovani: tankovano
+        };
+
+        jizdy.push(novaJizda);
+        localStorage.setItem('mojeJizdy', JSON.stringify(jizdy));
+        
+        aktualizujUI();
+        vymazInputy();
+    }
+
+    // NOVÁ FUNKCE: Vymazání všeho
+    function vymazatHistorii() {
+        if (confirm("Opravdu chceš smazat všechny záznamy?")) {
+            jizdy = []; // Vyprázdníme pole v operační paměti
+            localStorage.removeItem('mojeJizdy'); // Smažeme data z disku prohlížeče
+            aktualizujUI(); // Překreslíme prázdnou tabulku
+        }
+    }
+
+    function aktualizujUI() {
+        const tbody = document.querySelector('#tabulkaJizd tbody');
+        tbody.innerHTML = "";
+        
+        let celkemKm = 0;
+        let celkemCena = 0;
+
+        jizdy.forEach(j => {
+            celkemKm += j.km;
+            celkemCena += j.cena;
+            tbody.innerHTML += `<tr>
+                <td>${j.km}</td>
+                <td>${j.litry.toFixed(2)}</td>
+                <td>${j.cena.toFixed(0)} Kč</td>
+                <td>${j.tankovani > 0 ? j.tankovani + ' l' : '-'}</td>
+            </tr>`;
+        });
+
+        document.getElementById('totalKm').innerText = celkemKm.toFixed(1);
+        document.getElementById('totalPrice').innerText = celkemCena.toFixed(0);
+        document.getElementById('alert').style.display = celkemCena > 2000 ? 'block' : 'none';
+    }
+
+    function vymazInputy() {
+        document.getElementById('km').value = "";
+        document.getElementById('spotreba').value = "";
+        document.getElementById('cena').value = "";
+        document.getElementById('tankovano').value = "";
+    }
+</script>
+
+</body>
+</html>
