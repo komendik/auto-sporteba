@@ -3,45 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fuel Tracker</title>
+    <meta name="apple-mobile-web-app-title" content="FuelLog">
+    <title>Fuel Tracker: Monthly Pro</title>
 
-    <!-- Ikona pro mobilní plochu (SVG zakódované do base64) -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚗</text></svg>">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%231e1e2f%22/><text x=%2210%22 y=%2275%22 font-size=%2270%22>⛽</text></svg>">
-    
-    <!-- Barva lišty prohlížeče -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%231e1e2f%22/><text x=%2210%22 y=%2275%22 font-size=%2270%22>⛽</text></svg>?v=3">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%231e1e2f%22/><text x=%2210%22 y=%2275%22 font-size=%2270%22>⛽</text></svg>?v=3">
     <meta name="theme-color" content="#1e1e2f">
 
     <style>
         body {
             margin: 0;
             padding: 20px;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
             background: linear-gradient(135deg, #1e1e2f 0%, #4a1d1d 100%);
             background-attachment: fixed;
             color: white;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
         }
 
         .container {
             max-width: 500px;
             width: 100%;
-            padding: 30px;
+            padding: 25px;
             background: rgba(255, 255, 255, 0.07);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             border-radius: 25px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+            margin-bottom: 20px;
         }
 
-        h2 { text-align: center; font-weight: 300; letter-spacing: 2px; margin-bottom: 20px; }
+        h2, h3 { text-align: center; font-weight: 300; letter-spacing: 2px; margin-top: 0; }
+        h3 { color: #00ff88; font-size: 18px; margin-top: 20px; }
 
         input {
             width: 100%;
             padding: 14px;
-            margin: 10px 0;
+            margin: 8px 0;
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
@@ -49,10 +50,7 @@
             font-size: 16px;
             box-sizing: border-box;
             outline: none;
-            transition: 0.3s;
         }
-
-        input:focus { background: rgba(255, 255, 255, 0.15); border-color: #00ff88; transform: scale(1.01); }
 
         button {
             width: 100%;
@@ -63,33 +61,24 @@
             font-weight: bold;
             text-transform: uppercase;
             cursor: pointer;
-            transition: 0.2s;
         }
 
-        .btn-add { background: #00ff88; color: #121212; box-shadow: 0 4px 15px rgba(0, 255, 136, 0.2); }
-        .btn-add:active { transform: scale(0.98); }
+        .btn-add { background: #00ff88; color: #121212; }
+        .btn-reset { background: rgba(255, 68, 68, 0.15); color: #ff4444; border: 1px solid #ff4444; font-size: 12px; padding: 10px; }
 
-        .btn-reset { background: rgba(255, 68, 68, 0.15); color: #ff4444; border: 1px solid #ff4444; }
+        table { width: 100%; margin-top: 15px; border-collapse: collapse; font-size: 14px; }
+        th { font-size: 11px; color: rgba(255, 255, 255, 0.4); text-transform: uppercase; padding-bottom: 8px; text-align: left; }
+        td { padding: 10px 5px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
 
-        table { width: 100%; margin-top: 25px; border-collapse: collapse; }
-        th { font-size: 11px; color: rgba(255, 255, 255, 0.4); text-transform: uppercase; padding-bottom: 10px; text-align: left; }
-        td { padding: 12px 5px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 14px; }
-
-        .delete-btn { color: #ff4444; cursor: pointer; font-size: 18px; padding: 5px; }
-
-        .stats {
-            margin-top: 30px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 18px;
+        .report-card {
+            background: rgba(0, 255, 136, 0.05);
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 10px;
             border: 1px solid rgba(0, 255, 136, 0.1);
         }
 
-        .stats h3 { margin: 0 0 10px 0; font-size: 16px; color: #00ff88; }
-        .stats p { margin: 5px 0; font-size: 14px; opacity: 0.7; }
-        .stats b { font-size: 18px; color: white; }
-
-        .warning { color: #ff4444; font-size: 12px; margin-top: 10px; display: block; text-align: center; }
+        .delete-btn { color: #ff4444; cursor: pointer; font-size: 18px; }
     </style>
 </head>
 <body>
@@ -100,30 +89,27 @@
     <input type="number" id="km" placeholder="Ujeto km" inputmode="numeric">
     <input type="number" id="spotreba" placeholder="Spotřeba (l/100km)" step="0.1" inputmode="decimal">
     <input type="number" id="cena" placeholder="Cena za litr (Kč)" inputmode="numeric">
-    <input type="number" id="tankovano" placeholder="Natankováno litrů (0 pokud ne)" inputmode="numeric">
+    <input type="number" id="tankovano" placeholder="Natankováno litrů" inputmode="numeric">
     
     <button class="btn-add" onclick="pridatJizdu()">Přidat jízdu</button>
-    <button class="btn-reset" onclick="vymazatHistorii()">Resetovat data</button>
 
     <table id="tabulkaJizd">
         <thead>
             <tr>
                 <th>KM</th>
-                <th>Litrů</th>
                 <th>Cena</th>
-                <th>Tank.</th>
+                <th>Datum</th>
                 <th></th>
             </tr>
         </thead>
         <tbody></tbody>
     </table>
+</div>
 
-    <div id="stats" class="stats">
-        <h3>Celkové statistiky</h3>
-        <p>Celkem ujeto: <b id="totalKm">0</b> km</p>
-        <p>Celková cena: <b id="totalPrice">0</b> Kč</p>
-        <span id="alert" class="warning" style="display:none;">⚠️ Vysoké náklady na provoz!</span>
-    </div>
+<div class="container">
+    <h3>📅 MĚSÍČNÍ PŘEHLED</h3>
+    <div id="mesicniReporty"></div>
+    <button class="btn-reset" onclick="vymazatHistorii()" style="margin-top: 20px;">Vymazat celou historii</button>
 </div>
 
 <script>
@@ -138,73 +124,82 @@
         const tankovano = parseFloat(document.getElementById('tankovano').value) || 0;
 
         if (isNaN(km) || isNaN(spotreba) || isNaN(cenaPaliva)) {
-            alert("Doplň čísla!");
+            alert("Doplň data!");
             return;
         }
 
+        const dnes = new Date();
         const novaJizda = {
             km: km,
-            litry: (km / 100) * spotreba,
             cena: (km / 100) * spotreba * cenaPaliva,
-            tankovani: tankovano
+            datum: dnes.toISOString(),
+            mesicRok: dnes.toLocaleString('cs-CZ', { month: 'long', year: 'numeric' })
         };
 
         jizdy.push(novaJizda);
-        ulozData();
+        localStorage.setItem('mojeJizdy', JSON.stringify(jizdy));
         aktualizujUI();
-        vymazInputy();
+        
+        // Vymazat pole
+        document.getElementById('km').value = "";
     }
 
     function smazatJizdu(index) {
-        if (confirm("Smáznout tuhle jízdu?")) {
+        if (confirm("Smazat?")) {
             jizdy.splice(index, 1);
-            ulozData();
+            localStorage.setItem('mojeJizdy', JSON.stringify(jizdy));
             aktualizujUI();
         }
     }
 
     function vymazatHistorii() {
-        if (confirm("Fakt smazat všechno?")) {
+        if (confirm("Fakt všechno smazat?")) {
             jizdy = [];
-            ulozData();
+            localStorage.setItem('mojeJizdy', JSON.stringify(jizdy));
             aktualizujUI();
         }
     }
 
-    function ulozData() {
-        localStorage.setItem('mojeJizdy', JSON.stringify(jizdy));
-    }
-
     function aktualizujUI() {
         const tbody = document.querySelector('#tabulkaJizd tbody');
+        const reportDiv = document.getElementById('mesicniReporty');
         tbody.innerHTML = "";
+        reportDiv.innerHTML = "";
         
-        let celkemKm = 0;
-        let celkemCena = 0;
+        const souhrny = {};
 
         jizdy.forEach((j, index) => {
-            celkemKm += j.km;
-            celkemCena += j.cena;
+            // Tabulka jízd
+            const d = new Date(j.datum);
+            const datumFormat = `${d.getDate()}.${d.getMonth()+1}.`;
             
             tbody.innerHTML += `<tr>
-                <td>${j.km}</td>
-                <td>${j.litry.toFixed(2)}</td>
-                <td>${j.cena.toFixed(0)}</td>
-                <td>${j.tankovani > 0 ? j.tankovani + 'l' : '-'}</td>
+                <td>${j.km} km</td>
+                <td>${j.cena.toFixed(0)} Kč</td>
+                <td>${datumFormat}</td>
                 <td><span class="delete-btn" onclick="smazatJizdu(${index})">×</span></td>
             </tr>`;
+
+            // Logika pro měsíční souhrny
+            if (!souhrny[j.mesicRok]) {
+                souhrny[j.mesicRok] = { km: 0, kc: 0 };
+            }
+            souhrny[j.mesicRok].km += j.km;
+            souhrny[j.mesicRok].kc += j.cena;
         });
 
-        document.getElementById('totalKm').innerText = celkemKm.toFixed(1);
-        document.getElementById('totalPrice').innerText = celkemCena.toFixed(0);
-        document.getElementById('alert').style.display = celkemCena > 2000 ? 'block' : 'none';
-    }
-
-    function vymazInputy() {
-        document.getElementById('km').value = "";
-        document.getElementById('spotreba').value = "";
-        document.getElementById('cena').value = "";
-        document.getElementById('tankovano').value = "";
+        // Vykreslení měsíčních kartiček
+        for (const [mesic, data] of Object.entries(souhrny)) {
+            reportDiv.innerHTML += `
+                <div class="report-card">
+                    <div style="color: #00ff88; font-weight: bold; text-transform: capitalize;">${mesic}</div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                        <span>Najeto: <b>${data.km.toFixed(0)} km</b></span>
+                        <span>Útrata: <b>${data.kc.toFixed(0)} Kč</b></span>
+                    </div>
+                </div>
+            `;
+        }
     }
 </script>
 
