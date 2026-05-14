@@ -2,36 +2,107 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <!-- Tato řádka zajistí, že na mobilu bude web čitelný a nebude se zoomovat -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VibeCoding: Fuel Tracker</title>
+    <title>Fuel Tracker: Liquid Glass Edition</title>
     <style>
-        body { font-family: sans-serif; background: #121212; color: white; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; background: #1e1e1e; padding: 20px; border-radius: 10px; }
-        input, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 5px; border: none; font-size: 16px; }
-        button { background: #00ff88; color: black; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        button:hover { background: #00cc6e; }
-        /* Styl pro mazací tlačítko */
-        .btn-reset { background: #ff4444; color: white; margin-top: 10px; }
-        .btn-reset:hover { background: #cc0000; }
-        table { width: 100%; margin-top: 20px; border-collapse: collapse; }
-        th, td { border-bottom: 1px solid #333; padding: 10px; text-align: left; }
-        .stats { margin-top: 20px; padding: 15px; background: #252525; border-radius: 5px; border-left: 5px solid #00ff88; }
-        .warning { color: #ff4444; font-weight: bold; }
+        /* Základní pozadí s moderním gradientem */
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e1e2f 0%, #4a1d1d 100%);
+            background-attachment: fixed;
+            color: white;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Kontejner s efektem Glassmorphismu */
+        .container {
+            max-width: 500px;
+            width: 100%;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05); /* Poloprůhledné pozadí */
+            backdrop-filter: blur(15px); /* To nejdůležitější: Rozmazání pozadí */
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1); /* Jemný okraj skla */
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        h2 { text-align: center; margin-bottom: 25px; font-weight: 300; letter-spacing: 2px; }
+
+        /* Stylování vstupů */
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            box-sizing: border-box;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus { background: rgba(255, 255, 255, 0.2); border-color: #00ff88; }
+
+        /* Tlačítka */
+        button {
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-add { background: #00ff88; color: #121212; box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3); }
+        .btn-add:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 255, 136, 0.5); }
+
+        .btn-reset { background: rgba(255, 68, 68, 0.2); color: #ff4444; border: 1px solid #ff4444; margin-top: 5px; }
+        .btn-reset:hover { background: #ff4444; color: white; }
+
+        /* Tabulka */
+        table { width: 100%; margin-top: 25px; border-collapse: collapse; }
+        th { font-size: 12px; color: rgba(255, 255, 255, 0.5); text-transform: uppercase; padding-bottom: 10px; }
+        td { padding: 15px 5px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 15px; }
+
+        .delete-btn { color: #ff4444; cursor: pointer; font-size: 18px; }
+
+        /* Statistiky */
+        .stats {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .stats h3 { margin-top: 0; font-size: 18px; color: #00ff88; }
+        .stats p { margin: 8px 0; font-size: 14px; opacity: 0.8; }
+        .stats span { font-weight: bold; font-size: 18px; color: white; }
+
+        .warning { color: #ff4444; font-weight: bold; font-size: 13px; margin-top: 10px; display: block; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>🚗 Deník jízd & spotřeby</h2>
+    <h2>🚗 FUEL LOG</h2>
     
-    <input type="number" id="km" placeholder="Ujeto km">
-    <input type="number" id="spotreba" placeholder="Spotřeba (l/100km)" step="0.1">
-    <input type="number" id="cena" placeholder="Cena za litr (Kč)">
-    <input type="number" id="tankovano" placeholder="Natankováno litrů (0 pokud ne)">
+    <input type="number" id="km" placeholder="Ujeto km" inputmode="numeric">
+    <input type="number" id="spotreba" placeholder="Spotřeba (l/100km)" step="0.1" inputmode="decimal">
+    <input type="number" id="cena" placeholder="Cena za litr (Kč)" inputmode="numeric">
+    <input type="number" id="tankovano" placeholder="Natankováno litrů (0 pokud ne)" inputmode="numeric">
     
-    <button onclick="pridatJizdu()">Přidat jízdu do logu</button>
-    <button class="btn-reset" onclick="vymazatHistorii()">Vymazat celou historii</button>
+    <button class="btn-add" onclick="pridatJizdu()">Přidat jízdu</button>
+    <button class="btn-reset" onclick="vymazatHistorii()">Resetovat data</button>
 
     <table id="tabulkaJizd">
         <thead>
@@ -40,6 +111,7 @@
                 <th>Litrů</th>
                 <th>Cena</th>
                 <th>Tank.</th>
+                <th></th>
             </tr>
         </thead>
         <tbody></tbody>
@@ -49,12 +121,11 @@
         <h3>Celkové statistiky</h3>
         <p>Celkem ujeto: <span id="totalKm">0</span> km</p>
         <p>Celková cena: <span id="totalPrice">0</span> Kč</p>
-        <p id="alert" class="warning" style="display:none;">!!! Pozor, vysoké náklady !!!</p>
+        <span id="alert" class="warning" style="display:none;">⚠️ Vysoké náklady na provoz!</span>
     </div>
 </div>
 
 <script>
-    // Načtení dat z localStorage
     let jizdy = JSON.parse(localStorage.getItem('mojeJizdy')) || [];
 
     window.onload = aktualizujUI;
@@ -66,31 +137,41 @@
         const tankovano = parseFloat(document.getElementById('tankovano').value) || 0;
 
         if (isNaN(km) || isNaN(spotreba) || isNaN(cenaPaliva)) {
-            alert("Doplň prosím všechny údaje.");
+            alert("Doplň čísla, brácho!");
             return;
         }
 
         const novaJizda = {
-            km,
+            km: km,
             litry: (km / 100) * spotreba,
             cena: (km / 100) * spotreba * cenaPaliva,
             tankovani: tankovano
         };
 
         jizdy.push(novaJizda);
-        localStorage.setItem('mojeJizdy', JSON.stringify(jizdy));
-        
+        ulozData();
         aktualizujUI();
         vymazInputy();
     }
 
-    // NOVÁ FUNKCE: Vymazání všeho
-    function vymazatHistorii() {
-        if (confirm("Opravdu chceš smazat všechny záznamy?")) {
-            jizdy = []; // Vyprázdníme pole v operační paměti
-            localStorage.removeItem('mojeJizdy'); // Smažeme data z disku prohlížeče
-            aktualizujUI(); // Překreslíme prázdnou tabulku
+    function smazatJizdu(index) {
+        if (confirm("Smáznout tuhle jízdu?")) {
+            jizdy.splice(index, 1);
+            ulozData();
+            aktualizujUI();
         }
+    }
+
+    function vymazatHistorii() {
+        if (confirm("Fakt chceš smazat všechno?")) {
+            jizdy = [];
+            ulozData();
+            aktualizujUI();
+        }
+    }
+
+    function ulozData() {
+        localStorage.setItem('mojeJizdy', JSON.stringify(jizdy));
     }
 
     function aktualizujUI() {
@@ -100,14 +181,16 @@
         let celkemKm = 0;
         let celkemCena = 0;
 
-        jizdy.forEach(j => {
+        jizdy.forEach((j, index) => {
             celkemKm += j.km;
             celkemCena += j.cena;
+            
             tbody.innerHTML += `<tr>
                 <td>${j.km}</td>
                 <td>${j.litry.toFixed(2)}</td>
-                <td>${j.cena.toFixed(0)} Kč</td>
-                <td>${j.tankovani > 0 ? j.tankovani + ' l' : '-'}</td>
+                <td>${j.cena.toFixed(0)}</td>
+                <td>${j.tankovani > 0 ? j.tankovani + 'l' : '-'}</td>
+                <td><span class="delete-btn" onclick="smazatJizdu(${index})">×</span></td>
             </tr>`;
         });
 
