@@ -3,13 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fuel Tracker: Liquid Glass Edition</title>
+    <title>Fuel Tracker: Liquid Glass</title>
+
+    <!-- Ikona pro mobilní plochu (SVG zakódované do base64) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚗</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%231e1e2f%22/><text x=%2210%22 y=%2275%22 font-size=%2270%22>⛽</text></svg>">
+    
+    <!-- Barva lišty prohlížeče -->
+    <meta name="theme-color" content="#1e1e2f">
+
     <style>
-        /* Základní pozadí s moderním gradientem */
         body {
             margin: 0;
             padding: 20px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background: linear-gradient(135deg, #1e1e2f 0%, #4a1d1d 100%);
             background-attachment: fixed;
             color: white;
@@ -17,29 +24,27 @@
             justify-content: center;
         }
 
-        /* Kontejner s efektem Glassmorphismu */
         .container {
             max-width: 500px;
             width: 100%;
             padding: 30px;
-            background: rgba(255, 255, 255, 0.05); /* Poloprůhledné pozadí */
-            backdrop-filter: blur(15px); /* To nejdůležitější: Rozmazání pozadí */
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1); /* Jemný okraj skla */
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
         }
 
-        h2 { text-align: center; margin-bottom: 25px; font-weight: 300; letter-spacing: 2px; }
+        h2 { text-align: center; font-weight: 300; letter-spacing: 2px; margin-bottom: 20px; }
 
-        /* Stylování vstupů */
         input {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             margin: 10px 0;
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+            border-radius: 12px;
             color: white;
             font-size: 16px;
             box-sizing: border-box;
@@ -47,48 +52,44 @@
             transition: 0.3s;
         }
 
-        input:focus { background: rgba(255, 255, 255, 0.2); border-color: #00ff88; }
+        input:focus { background: rgba(255, 255, 255, 0.15); border-color: #00ff88; transform: scale(1.01); }
 
-        /* Tlačítka */
         button {
             width: 100%;
-            padding: 14px;
+            padding: 15px;
             margin: 10px 0;
-            border-radius: 10px;
+            border-radius: 12px;
             border: none;
             font-weight: bold;
             text-transform: uppercase;
             cursor: pointer;
-            transition: 0.3s;
+            transition: 0.2s;
         }
 
-        .btn-add { background: #00ff88; color: #121212; box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3); }
-        .btn-add:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 255, 136, 0.5); }
+        .btn-add { background: #00ff88; color: #121212; box-shadow: 0 4px 15px rgba(0, 255, 136, 0.2); }
+        .btn-add:active { transform: scale(0.98); }
 
-        .btn-reset { background: rgba(255, 68, 68, 0.2); color: #ff4444; border: 1px solid #ff4444; margin-top: 5px; }
-        .btn-reset:hover { background: #ff4444; color: white; }
+        .btn-reset { background: rgba(255, 68, 68, 0.15); color: #ff4444; border: 1px solid #ff4444; }
 
-        /* Tabulka */
         table { width: 100%; margin-top: 25px; border-collapse: collapse; }
-        th { font-size: 12px; color: rgba(255, 255, 255, 0.5); text-transform: uppercase; padding-bottom: 10px; }
-        td { padding: 15px 5px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 15px; }
+        th { font-size: 11px; color: rgba(255, 255, 255, 0.4); text-transform: uppercase; padding-bottom: 10px; text-align: left; }
+        td { padding: 12px 5px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 14px; }
 
-        .delete-btn { color: #ff4444; cursor: pointer; font-size: 18px; }
+        .delete-btn { color: #ff4444; cursor: pointer; font-size: 18px; padding: 5px; }
 
-        /* Statistiky */
         .stats {
             margin-top: 30px;
             padding: 20px;
             background: rgba(255, 255, 255, 0.03);
-            border-radius: 15px;
-            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 18px;
+            border: 1px solid rgba(0, 255, 136, 0.1);
         }
 
-        .stats h3 { margin-top: 0; font-size: 18px; color: #00ff88; }
-        .stats p { margin: 8px 0; font-size: 14px; opacity: 0.8; }
-        .stats span { font-weight: bold; font-size: 18px; color: white; }
+        .stats h3 { margin: 0 0 10px 0; font-size: 16px; color: #00ff88; }
+        .stats p { margin: 5px 0; font-size: 14px; opacity: 0.7; }
+        .stats b { font-size: 18px; color: white; }
 
-        .warning { color: #ff4444; font-weight: bold; font-size: 13px; margin-top: 10px; display: block; }
+        .warning { color: #ff4444; font-size: 12px; margin-top: 10px; display: block; text-align: center; }
     </style>
 </head>
 <body>
@@ -119,8 +120,8 @@
 
     <div id="stats" class="stats">
         <h3>Celkové statistiky</h3>
-        <p>Celkem ujeto: <span id="totalKm">0</span> km</p>
-        <p>Celková cena: <span id="totalPrice">0</span> Kč</p>
+        <p>Celkem ujeto: <b id="totalKm">0</b> km</p>
+        <p>Celková cena: <b id="totalPrice">0</b> Kč</p>
         <span id="alert" class="warning" style="display:none;">⚠️ Vysoké náklady na provoz!</span>
     </div>
 </div>
@@ -137,7 +138,7 @@
         const tankovano = parseFloat(document.getElementById('tankovano').value) || 0;
 
         if (isNaN(km) || isNaN(spotreba) || isNaN(cenaPaliva)) {
-            alert("Doplň čísla, brácho!");
+            alert("Doplň čísla!");
             return;
         }
 
@@ -163,7 +164,7 @@
     }
 
     function vymazatHistorii() {
-        if (confirm("Fakt chceš smazat všechno?")) {
+        if (confirm("Fakt smazat všechno?")) {
             jizdy = [];
             ulozData();
             aktualizujUI();
